@@ -123,6 +123,11 @@ for L in WORDLISTS:
         words += [line.strip() for line in f.readlines()]
 print(f"Loaded {len(words)} words from {len(WORDLISTS)} wordlists.")
 
+print("TUTORIAL")
+print("The program will prompt you with a word to say. The recording starts automatically. Say the word and press enter when done.")
+print("If you want to pause the recording, type 'p' and press enter. To restart the current word, type 'r' and press enter.")
+
+
 recorder = Recorder()
 
 master_thread = threading.Thread(target=recorder.process_commands)
@@ -137,16 +142,14 @@ for i, word in enumerate(words):
     while restarted:
         restarted = False
         recorder.receive_command(f"record {word}")
-        print(f"[{i+1}/{len(words)} | {i/len(words)*100}%] say {bcolors.OKCYAN}{word.upper()}{bcolors.ENDC} ", flush=True, end="")
+        print(f"[{i+1}/{len(words)} | {i/len(words)*100:.2f}%] say {bcolors.OKCYAN}{word.upper()}{bcolors.ENDC} ", flush=True, end="")
         a = input()
         if a == "":
             recorder.stop_recording()
-        elif a == "exit":
-            recorder.shutdown()
-            break
         elif a == "p":
             print("Pausing. Press enter to continue.")
             recorder.stop_recording()
+            restarted = True
             input()
         elif a == "r":
             print("Restarting current word.")

@@ -4,7 +4,10 @@ import math
 import time
 import threading
 import os
+import platform
 
+
+WINDOWS = platform.system() == "Windows"
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -142,7 +145,10 @@ for i, word in enumerate(words):
     while restarted:
         restarted = False
         recorder.receive_command(f"record {word}")
-        print(f"[{i+1}/{len(words)} | {i/len(words)*100:.2f}%] say {bcolors.OKCYAN}{word.upper()}{bcolors.ENDC} ", flush=True, end="")
+        if not WINDOWS:
+            print(f"[{i+1}/{len(words)} | {i/len(words)*100:.2f}%] say {bcolors.OKCYAN}{word.upper()}{bcolors.ENDC} ", flush=True, end="")
+        else:
+            print(f"[{i+1}/{len(words)} | {i/len(words)*100:.2f}%] say {word.upper()} ", flush=True, end="")
         a = input()
         if a == "":
             recorder.stop_recording()
